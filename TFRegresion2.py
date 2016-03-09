@@ -1,4 +1,3 @@
-
 import tensorflow as tf
 import numpy as np
 import matplotlib.pyplot as plt
@@ -7,6 +6,7 @@ import random
 
 dataLenght = 100
 step = 10
+nbatches = 10
 alpha = 0.3
 nW_hidden = 10
 
@@ -16,8 +16,8 @@ nW_hidden = 10
 t = range(dataLenght)
 data = [np.sin(2*np.pi*i/dataLenght)/2 for i in range(dataLenght)]
 
-x = tf.placeholder("float", [None, step])
-y_ = tf.placeholder("float", [None, 1])
+x = tf.placeholder("float", [nbatches,step])
+y_ = tf.placeholder("float", [1,nbatches])
 
 # W = tf.Variable(np.float32(np.random.rand(step, 1))*0.1)
 # b = tf.Variable(np.float32(np.random.rand(1))*0.1)
@@ -51,12 +51,19 @@ print "   Start training...  "
 print "----------------------"
 
 
-for epoch in range(1000):
-    for jj in range((len(data)-step)):
-        xs = np.atleast_2d([data[(i+jj)%len(data)] for i in range(step)])
-        ys = np.atleast_2d(data[(step+jj)%len(data)])
+for epoch in range(1):
+    for yy in range(nbatches):
+        xbatch = list()
+        ybatch = list()
+        for jj in range(step):
+            xbatch.append(([data[(i+jj+yy+epoch)%len(data)] for i in range(step)]))
+            ybatch.append((data[(step+jj+yy+epoch)%len(data)]))
+        #xs = np.atleast_2d([data[(i+jj)%len(data)] for i in range(step)])
+        ys = np.atleast_2d(ybatch)
+        xs = np.atleast_2d(xbatch)
+    print xs,ys
         # print xs, ys
-        sess.run(train, feed_dict={x: xs, y_: ys})
+    sess.run(train, feed_dict={x: xs, y_: ys})
     print sess.run(error_measure, feed_dict={x: xs, y_: ys})
     #     if epoch % 50 == 0:
     #         print "Iteration #:", epoch, "Error: ", sess.run(cross_entropy, feed_dict={x: xs, y_: ys})
@@ -67,7 +74,8 @@ for epoch in range(1000):
 print "----------------------"
 print "   Start testing...  "
 print "----------------------"
-
+x = tf.placeholder("float", [1,step])
+y_ = tf.placeholder("float", [1])
 outs = data[:step]
 for i in range(len(data)):
     xs = np.atleast_2d(outs[i:])
