@@ -1,4 +1,3 @@
-
 import tensorflow as tf
 import numpy as np
 import matplotlib.pyplot as plt
@@ -58,12 +57,12 @@ for epoch in range(1000):
         # print xs, ys
         sess.run(train, feed_dict={x: xs, y_: ys})
     print sess.run(error_measure, feed_dict={x: xs, y_: ys})
-    #     if epoch % 50 == 0:
-    #         print "Iteration #:", epoch, "Error: ", sess.run(cross_entropy, feed_dict={x: xs, y_: ys})
-    #         print sess.run(y, feed_dict={x: xs})
-    #         print ys
-    #         print "----------------------------------------------------------------------------------"
-
+    """if epoch % 50 == 0:
+        print "Iteration #:", epoch, "Error: ", sess.run(error_measure, feed_dict={x: xs, y_: ys})
+        print sess.run(y, feed_dict={x: xs})
+        print ys
+        print "----------------------------------------------------------------------------------"
+    """
 print "----------------------"
 print "   Start testing...  "
 print "----------------------"
