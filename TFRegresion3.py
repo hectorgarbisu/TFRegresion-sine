@@ -6,9 +6,10 @@ import random
 
 num_epochs = 100
 dataset_lenght = 200
+num_batches = dataset_lenght
 window_size = 40
 batch_size = 50
-alpha = 0.03
+alpha = 0.01
 nW_hidden = 10
 
 # t = np.arange(0,20.0, 0.1)
@@ -51,15 +52,22 @@ print "----------------------"
 print "   Start training...  "
 print "----------------------"
 
+#BEFORE: All samples of size 'window_size' are randomized within each serial batch
+# That generates a set of batches that are very local to the dataset
+#NOW: whole set of windows should is generated, then randomized and then batched
+
+windows_indexes = range(num_batches)
+shuffle(windows_indexes)
 
 for epoch in range(num_epochs):
-    for current_batch in range(dataset_lenght): #One batch
+    for current_batch in range(num_batches): #One batch
         xbatch = list()
         ybatch = list()
         for yy in range(batch_size):
-            xbatch.append(([data[(i+yy+current_batch)%len(data)] for i in range(window_size)]))
-            ybatch.append((data[(window_size+yy+current_batch)%len(data)]))
+            xbatch.append(([data[(i+yy+windows_indexes[current_batch])%len(data)] for i in range(window_size)]))
+            ybatch.append((data[(window_size+yy+windows_indexes[current_batch])%len(data)]))
         index_shuffle = range(batch_size)
+        shuffle(index_shuffle)
         xbatch = [xbatch[i] for i in index_shuffle]
         ybatch = [ybatch[i] for i in index_shuffle]
         xs = np.atleast_2d(xbatch)
